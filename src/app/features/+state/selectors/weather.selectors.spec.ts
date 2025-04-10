@@ -1,15 +1,14 @@
 import {
-  selectWeatherState,
-  selectWeatherData,
-  selectLoading,
+  getWeatherState,
+  getWeatherData,
+  isLoading,
 } from './weather.selectors';
-import { WeatherState } from '../reducers';
 import { IWeather, MockWeatherData } from '../../models';
 
 describe('Weather Selectors', () => {
   const mockWeatherData: IWeather[] = MockWeatherData;
 
-  const mockState = {
+  const mockWeatherState = {
     weather: {
       data: mockWeatherData,
       loading: true,
@@ -18,17 +17,17 @@ describe('Weather Selectors', () => {
   };
 
   it('should select the weather state', () => {
-    const result = selectWeatherState(mockState);
-    expect(result).toEqual(mockState.weather);
+    const result = getWeatherState(mockWeatherState);
+    expect(result).toEqual(mockWeatherState.weather);
   });
 
   it('should select weather data', () => {
-    const result = selectWeatherData(mockState);
+    const result = getWeatherData(mockWeatherState);
     expect(result).toEqual(mockWeatherData);
   });
 
   it('should select loading state', () => {
-    const result = selectLoading(mockState);
+    const result = isLoading(mockWeatherState);
     expect(result).toBe(true);
   });
 });

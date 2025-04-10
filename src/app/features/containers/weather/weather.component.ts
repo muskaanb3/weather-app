@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import {
-  selectLoading,
-  selectWeatherData,
+  isLoading,
+  getWeatherData,
   WeatherState,
   WeatherActions,
 } from './../../+state';
@@ -37,13 +37,13 @@ export class WeatherComponent implements OnInit, OnDestroy {
   constructor(private store: Store<{ weather: WeatherState }>) {}
 
   ngOnInit() {
-    this.loading$ = this.store.select(selectLoading);
+    this.loading$ = this.store.select(isLoading);
     this.getWeather();
   }
 
   getWeather() {
     this.subscriptions.add(
-      this.store.select(selectWeatherData).subscribe((data) => {
+      this.store.select(getWeatherData).subscribe((data) => {
         this.weatherData = data;
       })
     );
@@ -56,7 +56,7 @@ export class WeatherComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }

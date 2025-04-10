@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-import { selectLoading } from '../../+state';
+import { isLoading } from '../../+state';
 import { WeatherComponent } from './weather.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -52,7 +52,7 @@ describe('WeatherComponent', () => {
         provideMockStore({
           selectors: [
             {
-              selector: selectLoading,
+              selector: isLoading,
               value: loadingSubject.asObservable(),
             },
           ],
