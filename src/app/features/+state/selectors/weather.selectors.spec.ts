@@ -4,20 +4,10 @@ import {
   selectLoading,
 } from './weather.selectors';
 import { WeatherState } from '../reducers';
-import { IWeather } from '../../models';
+import { IWeather, MockWeatherData } from '../../models';
 
 describe('Weather Selectors', () => {
-  const mockWeatherData: IWeather[] = [
-    {
-      date: '2023-08-20 12:00:00',
-      temp: 20,
-      wind: 5,
-      description: 'clear sky',
-      icon: '01d',
-      minTemp: 18,
-      maxTemp: 22,
-    },
-  ];
+  const mockWeatherData: IWeather[] = MockWeatherData;
 
   const mockState = {
     weather: {

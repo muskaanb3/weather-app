@@ -1,4 +1,4 @@
-import { IWeather } from '../../models';
+import { IWeather, MockWeatherData } from '../../models';
 import { WeatherActions } from './weather.actions';
 
 describe('WeatherActions', () => {
@@ -9,17 +9,7 @@ describe('WeatherActions', () => {
   });
 
   it('should create Get Weather Success action with data', () => {
-    const data: IWeather[] = [
-      {
-        date: '2025-04-10',
-        temp: 15,
-        wind: 5,
-        description: 'Sunny',
-        icon: '01d',
-        minTemp: 10,
-        maxTemp: 18,
-      },
-    ];
+    const data: IWeather[] = MockWeatherData;
     const action = WeatherActions.getWeatherSuccess({ data });
 
     expect(action.type).toBe('[weather] Get Weather Success');
