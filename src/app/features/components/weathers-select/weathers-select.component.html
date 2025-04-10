@@ -1,0 +1,13 @@
+<div class="city-select">
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>Select City</mat-label>
+    <mat-select
+      [value]="selectedCity"
+      (selectionChange)="notifyCityChange.emit($event.value)"
+    >
+      <mat-option *ngFor="let city of cities" [value]="city">{{
+        city
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

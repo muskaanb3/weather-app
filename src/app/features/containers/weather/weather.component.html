@@ -1,0 +1,24 @@
+<div class="weather">
+  <div class="weather__loader" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-container *ngIf="!(loading$ | async)">
+    <app-weathers-select
+      [cities]="cities"
+      [selectedCity]="selectedCity"
+      (notifyCityChange)="onCityChange($event)"
+    ></app-weathers-select>
+
+    <ng-container *ngIf="weatherData.length > 0; else noWeatherData">
+      <div class="weather__card">
+        <app-weather-card [weatherData]="weatherData"></app-weather-card>
+      </div>
+    </ng-container>
+
+    <ng-template #noWeatherData>
+      <div class="weather__empty-state">
+        <h1>No weather data available for the selected city!</h1>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
