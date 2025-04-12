@@ -1,67 +1,36 @@
 import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BehaviorSubject } from 'rxjs';
-import { isLoading } from '../../+state';
 import { WeatherComponent } from './weather.component';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, Input, Output } from '@angular/core';
-import EventEmitter from 'events';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 
-// Mock WeatherCardComponent
-@Component({
-  selector: 'app-weather-card',
-  standalone: true,
-  template: '<div data-testid="weather-card">Weather Card</div>',
-  imports: [CommonModule],
-})
-class MockWeatherCardComponent {
-  @Input() weatherData: any;
-}
-
-// Mock WeathersSelectComponent
-@Component({
-  selector: 'app-weathers-select',
-  standalone: true,
-  template:
-    '<div data-testid="weathers-select" (click)="notifyCityChange.emit(\'London\')">Select City</div>',
-  imports: [CommonModule],
-})
-class MockWeathersSelectComponent {
-  @Input() cities: string[] = [];
-  @Input() selectedCity!: string;
-  @Output() notifyCityChange = new EventEmitter();
-}
+import { MockWeatherData } from '../../models';
+import { WeatherActions } from '../../+state';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 describe('WeatherComponent', () => {
   let fixture: ComponentFixture<WeatherComponent>;
   let component: WeatherComponent;
   let store: MockStore;
-  const loadingSubject = new BehaviorSubject<boolean>(false);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         WeatherComponent,
-        MockWeatherCardComponent,
-        MockWeathersSelectComponent,
         CommonModule,
         AsyncPipe,
+        MatProgressSpinnerModule,
       ],
-      providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: isLoading,
-              value: loadingSubject.asObservable(),
-            },
-          ],
-        }),
-        provideHttpClient(),
-      ],
+      providers: [provideMockStore(), provideHttpClient()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(WeatherComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -69,5 +38,43 @@ describe('WeatherComponent', () => {
 
   it('should create the component', () => {
     expect(true).toBeTruthy();
+  });
+
+  it('should call getWeather on init', () => {
+    // arrange
+    jest.spyOn(component, 'getWeather');
+    // act
+    component.ngOnInit();
+    // assert
+    expect(component.getWeather).toHaveBeenCalled();
+  });
+
+  it('should set weatherData when getWeather is called', () => {
+    // arrange
+    jest.spyOn(store, 'select').mockImplementation(() => of(MockWeatherData));
+    // act
+    component.getWeather();
+    // assert
+    expect(component.weatherData).toEqual(MockWeatherData);
+  });
+
+  it('should dispatch getWeather action when onCityChange is called', () => {
+    // arrange
+    jest.spyOn(store, 'dispatch');
+    // act
+    component.onCityChange('London');
+    // assert
+    expect(store.dispatch).toHaveBeenCalledWith(
+      WeatherActions.getWeather({ city: 'London' })
+    );
+  });
+
+  it('should set selectedCity when onCityChange is called', () => {
+    // arrange
+    jest.spyOn(store, 'dispatch');
+    // act
+    component.onCityChange('London');
+    // assert
+    expect(component.selectedCity).toEqual('London');
   });
 });
